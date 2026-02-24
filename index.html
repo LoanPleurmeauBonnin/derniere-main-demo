@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dernière Main</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#27ae60">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+
+    <main id="app-content">
+        
+        <section id="vue-map" class="vue active">
+            <div id="map"></div>
+        </section>
+
+        <section id="vue-album" class="vue">
+            <div class="contenu-page">
+                <h1>Mon Album 📚</h1>
+                <p>Vos cartes débloquées apparaissent ici.</p>
+                <div id="grille-album" class="grille-cartes"></div>
+            </div>
+        </section>
+
+        <section id="vue-about" class="vue">
+            <div class="contenu-page">
+                <h1>À propos de nous 🌱</h1>
+                <p>Dernière Main est une application conçue pour valoriser le réemploi à Nantes.</p>
+                <p><em>Version Démo Client - V1.0</em></p>
+                <br>
+                <button onclick="viderAlbum()" class="btn-action" style="background-color: #e74c3c;">Vider mon album (Reset Démo)</button>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="booster-modal" class="modal-cachee">
+        <div class="scene-3d">
+            <div class="carte-booster" id="ma-carte" onclick="retournerCarte()">
+                <div class="face-carte face-avant">
+                    <h2>📦 Booster<br>Dernière Main</h2>
+                    <p>Touchez pour ouvrir !</p>
+                </div>
+                <div class="face-carte face-arriere">
+                    <h3 id="carte-nom">Nom du lieu</h3>
+                    <img id="carte-image" src="" alt="Boutique" style="width:100%; height:150px; object-fit:cover; border-radius: 8px;">
+                    <p id="carte-concept" class="concept"></p>
+                    <div class="fun-fact">
+                        <strong>🌱 Fun Fact écolo :</strong><br>
+                        <span id="carte-funfact"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button onclick="fermerBooster()" class="btn-fermer">Ranger dans mon album 📁</button>
+    </div>
+
+    <nav class="barre-navigation">
+        <button onclick="changerVue('vue-map', this)" class="actif">
+            <span class="icon">🗺️</span><br>Carte
+        </button>
+        <button onclick="changerVue('vue-album', this)">
+            <span class="icon">📚</span><br>Album
+        </button>
+        <button onclick="changerVue('vue-about', this)">
+            <span class="icon">ℹ️</span><br>À propos
+        </button>
+    </nav>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
