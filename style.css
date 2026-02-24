@@ -1,6 +1,6 @@
-/* --- Variables de couleurs d'après ta maquette --- */
+/* --- Variables & Base --- */
 :root {
-    --primary-green: #0BB654; /* Le beau vert de tes boutons */
+    --primary-green: #0BB654;
     --bg-color: #F8F9FA;
     --text-dark: #1A1A1A;
     --text-muted: #8E8E93;
@@ -9,89 +9,121 @@
 
 body, html {
     margin: 0; padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-dark);
     height: 100vh; overflow: hidden;
 }
 
-/* --- Vues et Headers --- */
+/* --- Vues (Onglets) --- */
 #app-content { height: calc(100vh - 80px); }
 .vue { display: none; height: 100%; width: 100%; overflow-y: auto; background: white;}
 .vue.active { display: block; }
-.header-page { padding: 40px 20px 10px 20px; border-bottom: 1px solid var(--border-color); }
-.header-page h2 { margin: 0; font-size: 24px; }
+.header-page { padding: 40px 20px 15px 20px; border-bottom: 1px solid var(--border-color); background: white;}
+.header-page h2 { margin: 0; font-size: 24px; font-weight: 800;}
 .contenu-page { padding: 20px; }
+.text-muted { color: var(--text-muted); font-size: 14px; line-height: 1.5; }
 
-/* --- Éléments superposés sur la Map (Top Bar) --- */
-#vue-map { position: relative; }
-#map { width: 100%; height: 100%; }
-
-.top-bar-overlay {
-    position: absolute; top: 40px; left: 0; width: 100%;
-    z-index: 10; padding: 0 15px; box-sizing: border-box;
-    pointer-events: none; /* Laisse passer les clics vers la carte si on clique à côté */
-}
-
-.search-container {
-    display: flex; align-items: center; background: white;
-    padding: 12px 15px; border-radius: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); pointer-events: auto;
-}
-.search-container input {
-    border: none; outline: none; flex-grow: 1; margin-left: 10px; font-size: 14px;
-}
-.filter-btn { background: none; border: none; font-size: 18px; }
-
-.tags-container {
-    display: flex; gap: 10px; margin-top: 15px;
-    overflow-x: auto; pointer-events: auto;
-}
-.tag {
-    background: white; border: 1px solid var(--border-color); padding: 8px 15px;
-    border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer;
-}
-.tag.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
-
-/* --- Boutons globaux --- */
+/* --- Boutons UI --- */
 .btn-primary {
     width: 100%; background-color: var(--primary-green); color: white;
     border: none; padding: 15px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer;
 }
 .btn-secondary {
-    width: 100%; background-color: transparent; color: var(--text-muted);
-    border: none; padding: 15px; margin-top: 5px; cursor: pointer;
+    width: 100%; background-color: #F2F2F7; color: var(--text-dark);
+    border: none; padding: 15px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer;
 }
 
-/* --- Barre de Navigation --- */
+/* --- Map & Overlay Top Bar --- */
+#vue-map { position: relative; }
+#map { width: 100%; height: 100%; }
+
+.top-bar-overlay {
+    position: absolute; top: 40px; left: 0; width: 100%; z-index: 10;
+    padding: 0 15px; box-sizing: border-box; pointer-events: none;
+}
+.search-container {
+    display: flex; align-items: center; background: white;
+    padding: 12px 15px; border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); pointer-events: auto;
+}
+.search-container input { border: none; outline: none; flex-grow: 1; margin-left: 10px; font-size: 14px; }
+.filter-btn { background: none; border: none; font-size: 18px; padding: 0;}
+
+.tags-container {
+    display: flex; gap: 10px; margin-top: 15px;
+    overflow-x: auto; pointer-events: auto; padding-bottom: 5px;
+}
+.tags-container::-webkit-scrollbar { display: none; }
+.tag {
+    background: white; border: 1px solid var(--border-color); padding: 8px 15px;
+    border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; color: var(--text-dark);
+}
+.tag.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+
+/* --- Marker Mapbox Custom --- */
+/* --- Marker Custom (Mise à jour pour Leaflet) --- */
+.custom-marker {
+    background-color: var(--primary-green);
+    width: 20px !important; /* Force la taille pour Leaflet */
+    height: 20px !important;
+    border-radius: 50%;
+    border: 3px solid white; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    cursor: pointer; 
+    transition: transform 0.2s;
+    margin-top: -10px; /* Aligne parfaitement le centre avec Leaflet */
+    margin-left: -10px;
+}
+.custom-marker:active { transform: scale(1.2); }
+/* --- Bottom Sheet --- */
+.bottom-sheet {
+    position: fixed; bottom: 80px; /* Au-dessus de la nav bar */ left: 0; width: 100vw;
+    background: white; border-radius: 25px 25px 0 0;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+    z-index: 1500; transform: translateY(120%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1);
+}
+.bottom-sheet:not(.cache) { transform: translateY(0); }
+.sheet-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 3px; margin: 10px auto; }
+.sheet-content { padding: 20px; padding-top: 5px;}
+.sheet-header { display: flex; gap: 15px; margin-bottom: 15px; align-items: center;}
+.sheet-title h3 { margin: 0 0 5px 0; color: var(--primary-green); font-size: 18px;}
+.sheet-title p { margin: 0; font-size: 13px; color: var(--text-muted); }
+
+/* --- Barre Navigation Bas --- */
 .barre-navigation {
     position: fixed; bottom: 0; left: 0; width: 100vw; height: 80px;
     background-color: white; border-top: 1px solid var(--border-color);
     display: flex; justify-content: space-around; align-items: center; z-index: 2000;
 }
 .barre-navigation button {
-    background: none; border: none; color: var(--text-muted); font-size: 10px;
-    cursor: pointer; flex-grow: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: none; border: none; color: var(--text-muted); font-size: 11px; font-weight: 500;
+    cursor: pointer; flex-grow: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;
 }
-.barre-navigation button .icon { font-size: 24px; }
-.barre-navigation button.actif { color: var(--primary-green); font-weight: bold; }
-.barre-navigation button.actif .icon { filter: grayscale(0) sepia(1) hue-rotate(90deg) saturate(5); /* Astuce pour teinter les emojis en vert */ }
+.barre-navigation button .icon { font-size: 22px; }
+.barre-navigation button.actif { color: var(--primary-green); }
 
-/* --- Bottom Sheet (Overlay Infos) --- */
-.bottom-sheet {
-    position: fixed; bottom: 0; left: 0; width: 100vw;
-    background: white; border-radius: 25px 25px 0 0;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
-    z-index: 3000; transform: translateY(100%); transition: transform 0.3s ease-out;
-}
-.bottom-sheet:not(.cache) { transform: translateY(0); }
+/* --- Cartes Profil (Album) --- */
+.progress-card { border: 1px solid var(--border-color); border-radius: 15px; padding: 20px; margin-top: 10px; }
+.progress-bar-bg { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin-top: 10px; overflow: hidden;}
+.progress-bar-fill { height: 100%; background: var(--primary-green); border-radius: 4px;}
 
-.sheet-handle {
-    width: 40px; height: 5px; background: #E0E0E0; border-radius: 3px;
-    margin: 10px auto;
+.grille-cartes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.carte-miniature img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 10px; border: 2px solid var(--primary-green); }
+
+/* --- Booster 3D --- */
+#booster-modal {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 3000;
 }
-.sheet-content { padding: 20px; }
-.sheet-header { display: flex; gap: 15px; margin-bottom: 20px; }
-.sheet-title h3 { margin: 0 0 5px 0; color: var(--primary-green); }
-.sheet-title p { margin: 0; font-size: 12px; color: var(--text-muted); }
-.text-muted { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+.modal-cachee { display: none !important; }
+.scene-3d { width: 280px; height: 420px; perspective: 1000px; }
+.carte-booster { width: 100%; height: 100%; position: relative; transition: transform 0.8s; transform-style: preserve-3d; cursor: pointer; }
+.carte-booster.retournee { transform: rotateY(180deg); }
+.face-carte { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; }
+.face-avant { background: linear-gradient(135deg, var(--primary-green), #2ecc71); color: white; border: 6px solid #1e8449;}
+.face-arriere { background-color: white; color: var(--text-dark); transform: rotateY(180deg); border: 6px solid #f1c40f;}
+.face-arriere h3 { margin: 0 0 10px 0; color: var(--primary-green); }
+.concept { font-style: italic; color: var(--text-muted); font-size: 13px; margin: 10px 0;}
+.fun-fact { background: #F8F9FA; padding: 10px; border-radius: 8px; font-size: 12px; border: 1px solid var(--border-color);}
+.btn-fermer-booster { margin-top: 30px; padding: 15px 30px; background: white; color: var(--primary-green); border: none; border-radius: 25px; font-weight: bold; }

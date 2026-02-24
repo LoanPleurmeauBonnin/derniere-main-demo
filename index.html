@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dernière Main</title>
+    <title>Dernière Main - Démo UI</title>
     
-    <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
-    <script src="app.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
+    
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#27ae60">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="theme-color" content="#0BB654">
 </head>
 <body>
+
     <main id="app-content">
-            
+        
         <section id="vue-map" class="vue active">
             <div class="top-bar-overlay">
                 <div class="search-container">
@@ -38,7 +37,9 @@
                 <h2>Mes amis</h2>
             </div>
             <div class="contenu-page">
-                <p>Liste des amis ici...</p>
+                <div class="liste-amis-placeholder">
+                    <p class="text-muted">Aucun ami ajouté pour le moment.</p>
+                </div>
                 <button class="btn-primary" style="margin-top: 20px;">Ajouter des amis</button>
             </div>
         </section>
@@ -49,10 +50,13 @@
             </div>
             <div class="contenu-page">
                 <div class="progress-card">
-                    <h3>825 <span>pts</span></h3>
-                    <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
+                    <h3 style="font-size: 32px; margin: 0; color: #1A1A1A;">825 <span style="font-size: 16px; color: #0BB654;">pts</span></h3>
+                    <p style="font-size: 12px; color: var(--text-muted);">Prochaine récompense (83%)</p>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 83%;"></div></div>
                 </div>
-                <p>Liste des lieux visités ici...</p>
+                
+                <h3 style="margin-top: 30px; color: var(--primary-green);">Lieux visités</h3>
+                <p class="text-muted">Historique des visites à venir...</p>
             </div>
         </section>
 
@@ -61,8 +65,15 @@
                 <h2>Mon profil</h2>
             </div>
             <div class="contenu-page">
-                <h3 style="color: #0BB654; text-align: left;">Mes photos</h3>
-                </div>
+                <div style="background: #eee; height: 120px; border-radius: 15px; margin-bottom: 20px;"></div>
+                
+                <h3 style="color: var(--primary-green); margin-bottom: 5px;">Mes photos (Album)</h3>
+                <p class="text-muted" style="margin-top:0; font-size:13px;">Vos cartes de collection.</p>
+                
+                <div id="grille-album" class="grille-cartes"></div>
+                
+                <button onclick="viderAlbum()" class="btn-secondary" style="margin-top: 30px; color: #e74c3c;">Vider mon album (Reset Démo)</button>
+            </div>
         </section>
 
     </main>
@@ -71,33 +82,53 @@
         <div class="sheet-handle"></div>
         <div class="sheet-content">
             <div class="sheet-header">
-                <div id="sheet-image-placeholder" style="width: 80px; height: 80px; background: #eee; border-radius: 8px;"></div>
+                <img id="sheet-image" src="" alt="Lieu" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; background: #eee;">
                 <div class="sheet-title">
                     <h3 id="sheet-nom">Nom du lieu</h3>
-                    <p id="sheet-adresse">Adresse du lieu<br>XX:XX - XX:XX</p>
+                    <p id="sheet-adresse">Adresse...<br>Horaires...</p>
                 </div>
             </div>
             
-            <h4 style="color: #0BB654;">Description du lieu</h4>
-            <p id="sheet-concept" class="text-muted">Blablabla...</p>
+            <h4 style="color: var(--primary-green); margin-bottom: 5px;">Description du lieu</h4>
+            <p id="sheet-concept" class="text-muted" style="margin-top: 0;"></p>
             
-            <button id="btn-y-aller" class="btn-primary" style="margin-top: 20px;">Y aller</button>
-            <button onclick="fermerSheet()" class="btn-secondary">Fermer</button>
+            <button id="btn-valider-visite" class="btn-primary" style="margin-top: 15px;">Valider ma visite 📸</button>
+            <button id="btn-y-aller" class="btn-secondary">Y aller 🚶‍♂️</button>
         </div>
+    </div>
+
+    <div id="booster-modal" class="modal-cachee">
+        <div class="scene-3d">
+            <div class="carte-booster" id="ma-carte" onclick="retournerCarte()">
+                <div class="face-carte face-avant">
+                    <h2>📦 Booster<br>Dernière Main</h2>
+                    <p>Touchez pour ouvrir !</p>
+                </div>
+                <div class="face-carte face-arriere">
+                    <h3 id="carte-nom">Nom du lieu</h3>
+                    <img id="carte-image" src="" style="width:100%; height:140px; object-fit:cover; border-radius: 8px;">
+                    <p id="carte-concept" class="concept"></p>
+                    <div class="fun-fact">
+                        <strong>🌱 Fun Fact écolo :</strong><br><span id="carte-funfact"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button onclick="fermerBooster()" class="btn-fermer-booster">Ranger dans mon profil 📁</button>
     </div>
 
     <nav class="barre-navigation">
         <button onclick="changerVue('vue-map', this)" class="actif">
-            <span class="icon">🌍</span><br>Map
+            <span class="icon">🌍</span><span>Map</span>
         </button>
         <button onclick="changerVue('vue-amis', this)">
-            <span class="icon">👥</span><br>Amis
+            <span class="icon">👥</span><span>Amis</span>
         </button>
         <button onclick="changerVue('vue-recompense', this)">
-            <span class="icon">🏆</span><br>Récompense
+            <span class="icon">🏆</span><span>Récompense</span>
         </button>
         <button onclick="changerVue('vue-profil', this)">
-            <span class="icon">👤</span><br>Profil
+            <span class="icon">👤</span><span>Profil</span>
         </button>
     </nav>
 
