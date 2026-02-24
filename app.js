@@ -1,19 +1,21 @@
 // Variable globale pour mémoriser le lieu en cours de visite
 let magasinEnCours = null;
 
-// --- 1. INITIALISATION DE LA CARTE ---
-const map = L.map('map').setView([47.2184, -1.5536], 13);
+// --- 1. INITIALISATION DE LA CARTE MAPBOX ---
+// ⚠️ INSÈRE TON TOKEN MAPBOX ICI :
+mapboxgl.accessToken = 'pk.VOTRE_CLE_API_MAPBOX_ICI'; 
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19, attribution: '© OpenStreetMap'
-}).addTo(map);
-
-const starIcon = L.icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/118/118669.png',
-  iconSize: [30, 30], iconAnchor: [15, 15], popupAnchor: [0, -15]
+const map = new mapboxgl.Map({
+    container: 'map', // L'ID de ta div HTML
+    style: 'mapbox://styles/mapbox/streets-v12', // Le design de la carte
+    center: [-1.5536, 47.2184], // ⚠️ ATTENTION : [Longitude, Latitude] pour Nantes
+    zoom: 13
 });
 
-// --- 2. BASE DE DONNÉES ---
+// Ajouter les contrôles de navigation (Zoom et rotation)
+map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+// --- 2. BASE DE DONNÉES ET MARQUEURS ---
 const acteursReemploi = [
   {
     nom: "La Ressourcerie de l'Île",
@@ -35,9 +37,10 @@ const acteursReemploi = [
   }
 ];
 
-// Affichage des marqueurs
+// Boucler pour afficher les marqueurs
 acteursReemploi.forEach(lieu => {
-  const lienItineraire = `https://www.google.com/maps/dir/?api=1&destination=${lieu.lat},${lieu.lng}`;
+  const lienItineraire = `http://googleusercontent.com/maps.google.com/dir//${lieu.lat},${lieu.lng}`;
+  
   const popupHTML = `
     <div class="popup-content">
         <h3>${lieu.nom}</h3>
@@ -48,8 +51,31 @@ acteursReemploi.forEach(lieu => {
         <button onclick="verifierPosition('${lieu.nom}')" class="btn-valider">Valider ma visite 📸</button>
     </div>
   `;
-  L.marker([lieu.lat, lieu.lng], { icon: starIcon }).addTo(map).bindPopup(popupHTML);
+
+  // Créer un élément HTML pour l'icône personnalisée
+  const el = document.createElement('div');
+  el.className = 'custom-marker';
+
+  // Ajouter le marqueur à la carte (⚠️ Longitude d'abord !)
+  new mapboxgl.Marker(el)
+      .setLngLat([lieu.lng, lieu.lat])
+      .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupHTML))
+      .addTo(map);
 });
+
+// --- 3. CORRECTION DE LA NAVIGATION POUR MAPBOX ---
+// Modifie juste cette petite ligne dans ta fonction changerVue()
+function changerVue(idVueDemandee, elementBouton) {
+    // ... ton code actuel pour cacher/afficher ...
+    
+    if (idVueDemandee === 'vue-map') {
+        setTimeout(() => { 
+            map.resize(); // Mapbox utilise resize() au lieu de invalidateSize()
+        }, 100);
+    }
+}
+
+// ... LE RESTE DE TON CODE (MODE DÉMO, ALBUM, BOOSTER) RESTE EXACTEMENT LE MÊME ...
 
 // --- 3. NAVIGATION (ONGLETS) ---
 function changerVue(idVueDemandee, elementBouton) {
