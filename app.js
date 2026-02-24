@@ -37,30 +37,48 @@ const acteursReemploi = [
   }
 ];
 
-// Boucler pour afficher les marqueurs
 acteursReemploi.forEach(lieu => {
-  const lienItineraire = `http://googleusercontent.com/maps.google.com/dir//${lieu.lat},${lieu.lng}`;
-  
-  const popupHTML = `
-    <div class="popup-content">
-        <h3>${lieu.nom}</h3>
-        <p>📍 ${lieu.adresse}</p>
-        <p>🕒 ${lieu.horaires}</p>
-        <p>💡 ${lieu.concept}</p>
-        <a href="${lienItineraire}" target="_blank" class="btn-itineraire">Y aller 🚶‍♂️</a>
-        <button onclick="verifierPosition('${lieu.nom}')" class="btn-valider">Valider ma visite 📸</button>
-    </div>
-  `;
+    // 1. Créer le marqueur visuel
+    const el = document.createElement('div');
+    el.className = 'custom-marker'; // Tu peux remplacer ça par tes beaux points verts avec icône
 
-  // Créer un élément HTML pour l'icône personnalisée
-  const el = document.createElement('div');
-  el.className = 'custom-marker';
+    // 2. L'ajouter à la carte SANS Popup
+    const marker = new mapboxgl.Marker(el)
+        .setLngLat([lieu.lng, lieu.lat])
+        .addTo(map);
 
-  // Ajouter le marqueur à la carte (⚠️ Longitude d'abord !)
-  new mapboxgl.Marker(el)
-      .setLngLat([lieu.lng, lieu.lat])
-      .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupHTML))
-      .addTo(map);
+    // 3. Ajouter l'événement de clic pour ouvrir le Bottom Sheet
+    el.addEventListener('click', () => {
+        ouvrirSheetLieu(lieu);
+    });
+});
+
+// --- LOGIQUE DU BOTTOM SHEET ---
+function ouvrirSheetLieu(lieu) {
+    // Remplir les données
+    document.getElementById('sheet-nom').innerText = lieu.nom;
+    document.getElementById('sheet-adresse').innerHTML = `${lieu.adresse}<br>${lieu.horaires}`;
+    document.getElementById('sheet-concept').innerText = lieu.concept;
+    
+    // Mettre à jour le bouton d'itinéraire
+    const lienItineraire = `http://googleusercontent.com/maps.google.com/dir//${lieu.lat},${lieu.lng}`;
+    const btnYAller = document.getElementById('btn-y-aller');
+    btnYAller.onclick = () => window.open(lienItineraire, '_blank');
+
+    // Mémoriser le magasin en cours si tu veux garder le système de "Booster" pour la démo
+    magasinEnCours = lieu;
+
+    // Afficher le panneau
+    document.getElementById('bottom-sheet').classList.remove('cache');
+}
+
+function fermerSheet() {
+    document.getElementById('bottom-sheet').classList.add('cache');
+}
+
+// Optionnel : fermer le sheet quand on clique sur la carte
+map.on('click', () => {
+    fermerSheet();
 });
 
 // --- 3. CORRECTION DE LA NAVIGATION POUR MAPBOX ---

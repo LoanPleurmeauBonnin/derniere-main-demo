@@ -14,63 +14,90 @@
     <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
-
     <main id="app-content">
-        
+            
         <section id="vue-map" class="vue active">
+            <div class="top-bar-overlay">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Recherchez près de chez vous...">
+                    <button class="filter-btn">⚙️</button>
+                </div>
+                <div class="tags-container">
+                    <button class="tag active">🌍 Tout</button>
+                    <button class="tag">👕 Vêtements</button>
+                    <button class="tag">🍔 Nourriture</button>
+                </div>
+            </div>
+            
             <div id="map"></div>
         </section>
 
-        <section id="vue-album" class="vue">
+        <section id="vue-amis" class="vue">
+            <div class="header-page">
+                <h2>Mes amis</h2>
+            </div>
             <div class="contenu-page">
-                <h1>Mon Album 📚</h1>
-                <p>Vos cartes débloquées apparaissent ici.</p>
-                <div id="grille-album" class="grille-cartes"></div>
+                <p>Liste des amis ici...</p>
+                <button class="btn-primary" style="margin-top: 20px;">Ajouter des amis</button>
             </div>
         </section>
 
-        <section id="vue-about" class="vue">
-            <div class="contenu-page">
-                <h1>À propos de nous 🌱</h1>
-                <p>Dernière Main est une application conçue pour valoriser le réemploi à Nantes.</p>
-                <p><em>Version Démo Client - V1.0</em></p>
-                <br>
-                <button onclick="viderAlbum()" class="btn-action" style="background-color: #e74c3c;">Vider mon album (Reset Démo)</button>
+        <section id="vue-recompense" class="vue">
+            <div class="header-page">
+                <h2>Mes récompenses</h2>
             </div>
+            <div class="contenu-page">
+                <div class="progress-card">
+                    <h3>825 <span>pts</span></h3>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
+                </div>
+                <p>Liste des lieux visités ici...</p>
+            </div>
+        </section>
+
+        <section id="vue-profil" class="vue">
+            <div class="header-page">
+                <h2>Mon profil</h2>
+            </div>
+            <div class="contenu-page">
+                <h3 style="color: #0BB654; text-align: left;">Mes photos</h3>
+                </div>
         </section>
 
     </main>
 
-    <div id="booster-modal" class="modal-cachee">
-        <div class="scene-3d">
-            <div class="carte-booster" id="ma-carte" onclick="retournerCarte()">
-                <div class="face-carte face-avant">
-                    <h2>📦 Booster<br>Dernière Main</h2>
-                    <p>Touchez pour ouvrir !</p>
-                </div>
-                <div class="face-carte face-arriere">
-                    <h3 id="carte-nom">Nom du lieu</h3>
-                    <img id="carte-image" src="" alt="Boutique" style="width:100%; height:150px; object-fit:cover; border-radius: 8px;">
-                    <p id="carte-concept" class="concept"></p>
-                    <div class="fun-fact">
-                        <strong>🌱 Fun Fact écolo :</strong><br>
-                        <span id="carte-funfact"></span>
-                    </div>
+    <div id="bottom-sheet" class="bottom-sheet cache">
+        <div class="sheet-handle"></div>
+        <div class="sheet-content">
+            <div class="sheet-header">
+                <div id="sheet-image-placeholder" style="width: 80px; height: 80px; background: #eee; border-radius: 8px;"></div>
+                <div class="sheet-title">
+                    <h3 id="sheet-nom">Nom du lieu</h3>
+                    <p id="sheet-adresse">Adresse du lieu<br>XX:XX - XX:XX</p>
                 </div>
             </div>
+            
+            <h4 style="color: #0BB654;">Description du lieu</h4>
+            <p id="sheet-concept" class="text-muted">Blablabla...</p>
+            
+            <button id="btn-y-aller" class="btn-primary" style="margin-top: 20px;">Y aller</button>
+            <button onclick="fermerSheet()" class="btn-secondary">Fermer</button>
         </div>
-        <button onclick="fermerBooster()" class="btn-fermer">Ranger dans mon album 📁</button>
     </div>
 
     <nav class="barre-navigation">
         <button onclick="changerVue('vue-map', this)" class="actif">
-            <span class="icon">🗺️</span><br>Carte
+            <span class="icon">🌍</span><br>Map
         </button>
-        <button onclick="changerVue('vue-album', this)">
-            <span class="icon">📚</span><br>Album
+        <button onclick="changerVue('vue-amis', this)">
+            <span class="icon">👥</span><br>Amis
         </button>
-        <button onclick="changerVue('vue-about', this)">
-            <span class="icon">ℹ️</span><br>À propos
+        <button onclick="changerVue('vue-recompense', this)">
+            <span class="icon">🏆</span><br>Récompense
+        </button>
+        <button onclick="changerVue('vue-profil', this)">
+            <span class="icon">👤</span><br>Profil
         </button>
     </nav>
 

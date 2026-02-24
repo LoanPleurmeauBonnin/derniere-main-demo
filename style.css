@@ -1,134 +1,97 @@
-/* --- Reset & Base --- */
+/* --- Variables de couleurs d'après ta maquette --- */
+:root {
+    --primary-green: #0BB654; /* Le beau vert de tes boutons */
+    --bg-color: #F8F9FA;
+    --text-dark: #1A1A1A;
+    --text-muted: #8E8E93;
+    --border-color: #E5E5EA;
+}
+
 body, html {
     margin: 0; padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
-    height: 100vh;
-    overflow: hidden; /* Empêche le scroll global, on gère par vue */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    height: 100vh; overflow: hidden;
 }
 
-/* --- Gestion des Vues (Onglets) --- */
-#app-content {
-    height: calc(100vh - 70px); /* Laisse 70px pour la barre du bas */
-}
-
-.vue {
-    display: none;
-    height: 100%;
-    width: 100%;
-    overflow-y: auto; /* Scroll interne à la vue si besoin */
-}
-
+/* --- Vues et Headers --- */
+#app-content { height: calc(100vh - 80px); }
+.vue { display: none; height: 100%; width: 100%; overflow-y: auto; background: white;}
 .vue.active { display: block; }
+.header-page { padding: 40px 20px 10px 20px; border-bottom: 1px solid var(--border-color); }
+.header-page h2 { margin: 0; font-size: 24px; }
+.contenu-page { padding: 20px; }
 
-.contenu-page {
-    padding: 20px;
-    text-align: center;
-    color: #2c3e50;
+/* --- Éléments superposés sur la Map (Top Bar) --- */
+#vue-map { position: relative; }
+#map { width: 100%; height: 100%; }
+
+.top-bar-overlay {
+    position: absolute; top: 40px; left: 0; width: 100%;
+    z-index: 10; padding: 0 15px; box-sizing: border-box;
+    pointer-events: none; /* Laisse passer les clics vers la carte si on clique à côté */
 }
 
-/* --- Carte Leaflet --- */
-#map {
-    width: 100%;
-    height: 100%;
+.search-container {
+    display: flex; align-items: center; background: white;
+    padding: 12px 15px; border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); pointer-events: auto;
 }
+.search-container input {
+    border: none; outline: none; flex-grow: 1; margin-left: 10px; font-size: 14px;
+}
+.filter-btn { background: none; border: none; font-size: 18px; }
 
-.popup-content h3 { margin: 0 0 5px 0; color: #2c3e50; font-size: 16px; }
-.popup-content p { margin: 5px 0; font-size: 13px; }
-.btn-valider, .btn-itineraire {
-    display: block; width: 100%; text-align: center;
-    padding: 8px; border-radius: 5px; text-decoration: none;
-    margin-top: 8px; font-weight: bold; cursor: pointer; border: none;
+.tags-container {
+    display: flex; gap: 10px; margin-top: 15px;
+    overflow-x: auto; pointer-events: auto;
 }
-.btn-itineraire { background-color: #3498db; color: white; }
-.btn-valider { background-color: #27ae60; color: white; }
-.btn-action {
-    background-color: #27ae60; color: white; border: none; padding: 12px 20px;
-    border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer;
+.tag {
+    background: white; border: 1px solid var(--border-color); padding: 8px 15px;
+    border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.tag.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+
+/* --- Boutons globaux --- */
+.btn-primary {
+    width: 100%; background-color: var(--primary-green); color: white;
+    border: none; padding: 15px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer;
+}
+.btn-secondary {
+    width: 100%; background-color: transparent; color: var(--text-muted);
+    border: none; padding: 15px; margin-top: 5px; cursor: pointer;
 }
 
 /* --- Barre de Navigation --- */
 .barre-navigation {
-    position: fixed; bottom: 0; left: 0; width: 100vw; height: 70px;
-    background-color: white; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    display: flex; justify-content: space-around; align-items: center;
-    z-index: 2000;
+    position: fixed; bottom: 0; left: 0; width: 100vw; height: 80px;
+    background-color: white; border-top: 1px solid var(--border-color);
+    display: flex; justify-content: space-around; align-items: center; z-index: 2000;
 }
-
 .barre-navigation button {
-    background: none; border: none; color: #bdc3c7; font-size: 12px;
-    cursor: pointer; flex-grow: 1; height: 100%; transition: color 0.3s;
+    background: none; border: none; color: var(--text-muted); font-size: 10px;
+    cursor: pointer; flex-grow: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
-.barre-navigation button .icon { font-size: 24px; display: block; margin-bottom: 3px; }
-.barre-navigation button.actif { color: #27ae60; font-weight: bold; }
+.barre-navigation button .icon { font-size: 24px; }
+.barre-navigation button.actif { color: var(--primary-green); font-weight: bold; }
+.barre-navigation button.actif .icon { filter: grayscale(0) sepia(1) hue-rotate(90deg) saturate(5); /* Astuce pour teinter les emojis en vert */ }
 
-/* --- Modale Booster & Animation 3D --- */
-#booster-modal {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background-color: rgba(0, 0, 0, 0.9);
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    z-index: 3000;
+/* --- Bottom Sheet (Overlay Infos) --- */
+.bottom-sheet {
+    position: fixed; bottom: 0; left: 0; width: 100vw;
+    background: white; border-radius: 25px 25px 0 0;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+    z-index: 3000; transform: translateY(100%); transition: transform 0.3s ease-out;
 }
-.modal-cachee { display: none !important; }
+.bottom-sheet:not(.cache) { transform: translateY(0); }
 
-.scene-3d { width: 300px; height: 450px; perspective: 1000px; }
-.carte-booster {
-    width: 100%; height: 100%; position: relative;
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-style: preserve-3d; cursor: pointer;
+.sheet-handle {
+    width: 40px; height: 5px; background: #E0E0E0; border-radius: 3px;
+    margin: 10px auto;
 }
-.carte-booster.retournee { transform: rotateY(180deg); }
-
-.face-carte {
-    width: 100%; height: 100%; position: absolute;
-    backface-visibility: hidden; border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    padding: 20px; box-sizing: border-box; text-align: center;
-}
-.face-avant { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; border: 8px solid #1e8449;}
-.face-arriere { background-color: white; color: #2c3e50; transform: rotateY(180deg); border: 8px solid #f1c40f;}
-
-.face-arriere h3 { margin-top: 0; color: #27ae60; }
-.concept { font-style: italic; color: #7f8c8d; font-size: 13px; margin: 10px 0;}
-.fun-fact { margin-top: 10px; background: #ecf0f1; padding: 10px; border-radius: 8px; font-size: 12px; }
-
-.btn-fermer {
-    margin-top: 30px; padding: 12px 24px; background: white; color: #27ae60;
-    border: none; border-radius: 25px; font-weight: bold; cursor: pointer;
-}
-
-/* --- Grille Album --- */
-.grille-cartes {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
-    padding: 10px; margin-top: 10px;
-}
-.carte-miniature {
-    background: white; border-radius: 10px; padding: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center;
-    border: 3px solid #f1c40f;
-}
-.carte-miniature img { width: 100%; height: 80px; object-fit: cover; border-radius: 5px; }
-.carte-miniature h4 { font-size: 13px; margin: 8px 0 0 0; color: #27ae60; }
-
-/* --- Icône Mapbox Personnalisée --- */
-.custom-marker {
-    background-image: url('https://cdn-icons-png.flaticon.com/512/118/118669.png');
-    background-size: cover;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    /* Petite animation au survol pour le côté premium */
-    transition: transform 0.2s;
-}
-
-.custom-marker:hover {
-    transform: scale(1.2);
-}
-
-/* On ajuste le design des popups Mapbox pour qu'elles collent à ton style */
-.mapboxgl-popup-content {
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
+.sheet-content { padding: 20px; }
+.sheet-header { display: flex; gap: 15px; margin-bottom: 20px; }
+.sheet-title h3 { margin: 0 0 5px 0; color: var(--primary-green); }
+.sheet-title p { margin: 0; font-size: 12px; color: var(--text-muted); }
+.text-muted { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
