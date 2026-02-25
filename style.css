@@ -1,32 +1,118 @@
-/* --- Variables & Base --- */
+/* --- Variables & Charte Graphique --- */
 :root {
-    --primary-green: #0BB654;
-    --bg-color: #F8F9FA;
-    --text-dark: #1A1A1A;
-    --text-muted: #8E8E93;
+    --primary-green: #07ad41;  /* VERT */
+    --terracotta: #E75D46;     /* TERRACOTTA */
+    --grey-charte: #cbcaca;    /* GRIS */
+    --bg-white: #ffffff;       /* BLANC */
+    
+    --text-dark: #1A1A1A;      /* Pour les titres sombres */
     --border-color: #E5E5EA;
 }
 
 body, html {
     margin: 0; padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: var(--bg-color);
+    background-color: var(--bg-white);
     color: var(--text-dark);
     height: 100vh; overflow: hidden;
 }
 
-/* --- Vues (Onglets) --- */
-#app-content { height: calc(100vh - 80px); }
-.vue { display: none; height: 100%; width: 100%; overflow-y: auto; background: white;}
-.vue.active { display: block; }
-.header-page { padding: 40px 20px 15px 20px; border-bottom: 1px solid var(--border-color); background: white;}
-.header-page h2 { margin: 0; font-size: 24px; font-weight: 800;}
-.contenu-page { padding: 20px; }
-.text-muted { color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+/* ========================================== */
+/* STYLES DE LA LANDING PAGE                  */
+/* ========================================== */
 
-/* --- Boutons UI --- */
+.landing-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: var(--bg-white);
+    z-index: 9999; /* Par-dessus tout le reste de l'app */
+    overflow-y: auto; overflow-x: hidden;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: flex; flex-direction: column;
+}
+
+.landing-overlay.hidden {
+    opacity: 0;
+    transform: translateY(-20px); /* Petit effet de glissement vers le haut à la fermeture */
+    pointer-events: none;
+}
+
+/* Header de la landing */
+.landing-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 25px;
+}
+.logo-placeholder {
+    width: 60px; height: 30px;
+    background: repeating-conic-gradient(#f0f0f0 0% 25%, transparent 0% 50%) 50% / 10px 10px; /* Motif grille transparente */
+    border-radius: 4px;
+}
+.menu-burger { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
+.menu-burger .bar { width: 20px; height: 2px; background-color: var(--text-dark); border-radius: 2px; }
+
+/* Contenu textuel */
+.landing-content { padding: 10px 25px 0 25px; flex-grow: 1; }
+
+.badge-terracotta {
+    display: inline-flex; align-items: center;
+    background-color: rgba(231, 93, 70, 0.1);
+    color: var(--terracotta);
+    padding: 8px 15px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; margin-bottom: 25px;
+}
+.badge-terracotta .dot {
+    width: 6px; height: 6px; background-color: var(--terracotta);
+    border-radius: 50%; margin-right: 8px;
+}
+
+.landing-title { font-size: 32px; font-weight: 800; line-height: 1.1; margin: 0 0 15px 0; letter-spacing: -0.5px;}
+.text-green { color: var(--primary-green); }
+
+.landing-desc { font-size: 15px; color: var(--grey-charte); line-height: 1.6; margin-bottom: 25px; font-weight: 500;}
+
+/* Tags verts outline */
+.landing-tags { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+.tag-outline {
+    border: 1px solid var(--primary-green); color: var(--primary-green);
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700;
+}
+
+/* Boutons Landing */
+.btn-large { padding: 18px; font-size: 16px; margin-bottom: 15px; }
+.btn-video {
+    width: 100%; background: transparent; border: none;
+    color: var(--text-dark); font-weight: 700; font-size: 15px;
+    padding: 10px; cursor: pointer;
+}
+
+/* Faux Mockup en bas (Pour la démo CSS, à remplacer par une vraie image) */
+.landing-mockup-container {
+    margin-top: 30px; display: flex; justify-content: center;
+    position: relative; height: 150px; overflow: hidden;
+}
+/* Ombre fondue vers le bas pour l'image */
+.landing-mockup-container::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+    background: linear-gradient(to top, var(--bg-white), transparent);
+}
+.mockup-css {
+    width: 220px; height: 400px; border: 12px solid #1A1A1A;
+    border-radius: 35px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+    position: relative; background: #f4f4f4; display: flex; align-items: center; justify-content: center;
+    color: var(--grey-charte); font-weight: bold; font-size: 12px;
+}
+.mockup-notch {
+    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    width: 100px; height: 25px; background: #1A1A1A; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;
+}
+
+
+/* ========================================== */
+/* LE RESTE DE TON CSS (Celui du tour précédent) */
+/* ========================================== */
+
+/* --- Boutons UI de l'app --- */
 .btn-primary {
-    width: 100%; background-color: var(--primary-green); color: white;
+    width: 100%; background-color: var(--primary-green); color: var(--bg-white);
     border: none; padding: 15px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer;
 }
 .btn-secondary {

@@ -1,12 +1,29 @@
+// ==========================================
+// 0. LOGIQUE DE LA LANDING PAGE
+// ==========================================
+function demarrerApp() {
+    const landing = document.getElementById('landing-page');
+    
+    // 1. Ajoute la classe qui déclenche la transition CSS (fondu + glissement)
+    landing.classList.add('hidden');
+    
+    // 2. Après la durée de l'animation (500ms), on cache complètement la div
+    // et on répare la carte Leaflet qui était cachée en dessous
+    setTimeout(() => {
+        landing.style.display = 'none';
+        map.invalidateSize(); // Indispensable pour que la carte Leaflet s'affiche bien
+    }, 500);
+}
+
 let magasinEnCours = null;
 
 // ==========================================
-// 1. INITIALISATION LEAFLET (Sans clé API !)
+// 1. INITIALISATION LEAFLET (Avec CartoDB)
 // ==========================================
 // On désactive le zoomControl pour garder un look d'application native très propre
 const map = L.map('map', { zoomControl: false }).setView([47.2184, -1.5536], 13);
 
-// LE SECRET : Le fond de carte "Voyager" de CartoDB (très clair, coloré et moderne)
+// Le fond de carte "Voyager" de CartoDB (très clair, coloré et moderne)
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap, &copy; CARTO',
     maxZoom: 19
